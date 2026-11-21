@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E2 Pipeline</title>
+  <script>(function () { var t = "dark"; try { t = localStorage.getItem("e2-theme") || "dark"; } catch (e) {} document.documentElement.dataset.theme = t; })();</script>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M7.5 12h4l5-5M11.5 12l5 5"/></svg>
+      E2
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="top-actions">
+      <button class="icon-btn" id="theme-btn" title="Toggle theme">☾</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="main"><div class="empty">Loading…</div></main>
+<div id="overlay" class="overlay hidden"></div>
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

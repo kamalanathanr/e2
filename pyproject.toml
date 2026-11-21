@@ -1,0 +1,13 @@
+[project]
+name = "e2"
+version = "0.1.0"
+description = "E2 - a local-first CI/CD pipeline dashboard"
+requires-python = ">=3.12"
+dependencies = ["fastapi>=0.115", "uvicorn>=0.30"]
+
+[project.scripts]
+e2 = "e2.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
