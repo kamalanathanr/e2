@@ -34,7 +34,10 @@ DEFAULT_CONFIG = {
     "source": {"type": "git", "url": "", "branch": "main", "commit": "", "local_path": "",
                "trigger": "manual", "poll_seconds": 60},
     "build": {"technology": "auto", "command": ""},
-    "platform": {"mac": True, "windows": False, "linux": False, "ios": False, "android": False},
+    "platform": {"mac": True, "windows": False, "linux": False, "ios": False, "android": False,
+                 "readme": True, "readme_path": "README.md", "release_notes": True, "release_notes_path": "RELEASE_NOTES.md",
+                 "icon": False, "icon_path": "icon.png",
+                 "installer": False, "app_name": "", "app_url": "", "app_env": ""},
     "test": {"unit": True, "integration": False, "regression": False, "docker": False,
              "security": False, "license": False},
     "verify": {"checksum": True, "signature": False, "smoke": False},
@@ -81,9 +84,12 @@ def workspace(pid: str) -> Path:
 
 def project(pid: str) -> dict | None:
     try:
-        return _read(pdir(pid) / "project.json")
+        p = _read(pdir(pid) / "project.json")
     except KeyError:
         return None
+    if p:  # options added in newer E2 versions get their defaults
+        p["config"] = merge(DEFAULT_CONFIG, p.get("config") or {})
+    return p
 
 
 def projects() -> list[dict]:

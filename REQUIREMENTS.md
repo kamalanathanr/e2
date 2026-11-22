@@ -6,14 +6,23 @@ Start: `./run.sh` → http://localhost:8700 (uses the next free port if 8700 is 
 ## Pipeline stages (each run goes through them in order)
 | # | Stage | Status |
 |---|-------|--------|
-| 1 | **Source**: clone/pull a Git branch (optionally pinned to a commit/tag) or copy a local folder; detect technology | ✅ built |
-| 2 | **Build & Dependencies**: build with the detected/selected tool (Maven, Gradle, npm, Python, Go, .NET, Rust, Flutter, Xcode, custom) and download dependencies | next |
-| 3 | **Target Platform**: Desktop: macOS, Windows, Linux · Mobile: iOS, Android | planned |
-| 4 | **Test** (optional checkboxes): unit, integration, regression, in Docker, security review, license/patent/copied-code review | planned |
-| 5 | **Verify Artifact**: checksum, code signing, smoke test | planned |
-| 6 | **Publish**: local folder, Artifactory/Nexus, GitHub Releases, Docker registry, App Store Connect/TestFlight, Google Play, Microsoft Store | planned |
+| 1 | **Source**: clone/pull a Git branch (optionally pinned to a commit/tag) or copy a local folder; detect technology | ✅ |
+| 2 | **Build & Dependencies**: build with the detected/selected tool (Maven, Gradle, npm, Python, Go, .NET, Rust, Flutter, Xcode, custom) and download dependencies | ✅ |
+| 3 | **Target Platform**: Desktop: macOS, Windows, Linux · Mobile: iOS, Android | ✅ |
+| 4 | **Test** (optional checkboxes): unit, integration, regression, in Docker, security review, license/patent/copied-code review | ✅ |
+| 5 | **Verify Artifact**: checksum, code signing, smoke test | ✅ |
+| 6 | **Publish**: local folder, Artifactory/Nexus, GitHub Releases, Docker registry, App Store Connect/TestFlight, Google Play, Microsoft Store | ✅ |
 
-Stages not built yet are shown and their options can already be set and saved. During a run they are marked *skipped*.
+Machines can't build every target. A target this machine can't build (e.g. Windows Flutter on a Mac, Go for iOS) is reported as *unsupported* rather than failed.
+Go and .NET cross-compile for all desktop OSes. JVM, Python and web builds produce one portable artifact.
+Test checks report passed / failed / skipped / warning. License review only *warns*; a person decides.
+Security fails on real secrets or audit failures. Reports go in `runs/<n>/reports/`.
+Publish credentials come from environment variables (see `e2/stages/publish.py`), never project files.
+
+## Running and re-running
+- **Run pipeline** (first run) → afterwards **Re-build**: a new run from stage 1 with a version bump.
+- **Continue build**: carries on the selected run from the stage where it stopped.
+- Per stage: **Run this stage** or **Re-run from here**. Both use the options as saved now, so a fix applies straight away.
 
 ## Triggers & versions
 - Trigger per project: **manual** (Run button) or **automatic** (polls the branch head / local folder and runs on change).
@@ -25,7 +34,7 @@ Stages not built yet are shown and their options can already be set and saved. D
 `data/projects/<project>/`: `project.json`, `workspace/`, `runs/<n>/run.json` (per-stage state),
 `runs/<n>/events.jsonl` (every transition), `runs/<n>/logs/<stage>.log`.
 State is saved after every transition. If the server stops mid-run, the run is marked *interrupted*.
-**Resume** continues from the first stage that did not finish, and also works on failed or cancelled runs.
+**Continue build** picks up from the first stage that did not finish.
 
 ## UI
 - Top strip (~10%): project count, running, succeeded, failed, needs attention, auto-trigger.
